@@ -1,0 +1,115 @@
+#Examen de recuperación de la unidad 3D
+#Alumna: Catherine Ordoñez Mendoza
+# Unidad 3D. Examen complementario
+
+import matplotlib.pyplot as plt 
+import numpy as np
+from math import sin, cos, radians,sqrt
+import keyboard
+
+#______Coordenadas iniciales
+xg=[]
+yg=[]
+zg=[]
+
+#_____Cordenadas centrales
+xc=50
+yc=30
+zc=30
+
+#____Plotear el sistema 
+#def plotPlaneLine(xg,yg,zg,xh,yh,xhg,yhg,hitcolor):
+def plotPlaneLine(xg,yg,zg,A,A1,A2,valArea):
+    plt.axis([0,200,0,200])
+    plt.axis('on')
+    plt.grid(False)
+
+    plt.plot([xg[0],xg[1]],[yg[0],yg[1]],color='k')#plano
+    plt.plot([xg[0],xg[2]],[yg[0],yg[2]],color='k')
+    plt.plot([xg[1],xg[2]],[yg[1],yg[2]],color='k')
+
+    #Aquí se pletean los triángulos con el hitpiont
+    plt.plot([xg[1],xg[3]],[yg[1],yg[3]],linestyle=':',color='purple')
+    plt.plot([xg[0],xg[3]],[yg[0],yg[3]],linestyle=':',color='yellow')
+    plt.plot([xg[2],xg[3]],[yg[2],yg[3]],linestyle=':',color='blue')
+    plt.scatter(xg[3],yg[3], s=15, color='r')
+
+    plt.title("Examen recuperación 3D")
+    plt.xlabel("Eje x")
+    plt.ylabel("Eje y")
+
+    #Aquí se mostrarán las etiquetas de cada área
+    plt.text(20,40,valArea,color='green')
+    plt.text(20,30,A,color='green')
+    plt.text(20,20,A1,color='green')
+    plt.text(20,10,A2,color='green')
+    
+    plt.show()
+
+def hitpoint(xg,yg,zg):
+    #_____ Calcular el área del triángulo A
+    a=xg[0]-xg[1]
+    b=yg[0]-yg[1]
+    d01=sqrt(a*a+b*b)
+
+    a=xg[0]-xg[2] #del punto 0 al 2
+    b=yg[0]-yg[2]
+    d02=sqrt(a*a+b*b)
+
+    a=xg[1]-xg[2]
+    b=yg[1]-yg[2]
+    d12=sqrt(a*a+b*b)
+    s=(d01+d12+d02)/2
+    A=sqrt(abs(s*(s-d01)*(s-d12)*(s-d02)))
+
+
+    #_____ Calcular el área del triángulo A1
+    a=xg[1]-xg[3]
+    b=yg[1]-yg[3]
+    d13=sqrt(a*a+b*b)
+
+    a=xg[0]-xg[3]
+    b=yg[0]-yg[3]
+    d03=sqrt(a*a+b*b)
+    s=(d01+d13+d03)/2
+    A1=sqrt(abs(s*(s-d01)*(s-d13)*(s-d03)))
+
+   #_____ Calcular el área del triángulo A2
+    a=xg[2]-xg[3]
+    b=yg[2]-yg[3]
+    d23=sqrt(a*a+b*b)
+
+    s=(d01+d13+d03)/2
+    A2=sqrt(abs(s*(s-d23)*(s-d02)*(s-d03)))
+            #se convierte en valor absoluto para que no vayan a haber números negativos
+    sumarea=A1+A2
+    #se determina si el hit point está afuera o dentro del limite
+    if(sumarea<A):
+        valArea='El Hit point se encuentra dentro de los limites'
+    else:
+        valArea='El Hit point se encuentra fuera de los limites'
+
+    plotPlaneLine(xg,yg,zg,A,A1,A2,valArea)
+    
+#____ Aquí el usuario ingrea los hitpoint de X, Y o si desea salir de la ejecución
+print("Press ENTER to continue or ESC to exit")
+while True:
+
+    if keyboard.is_pressed('ENTER'):
+        input()    
+        axis=int(input("Ingresa el valor del Hit point X:  "))
+        x=[40,30,80, axis]
+        axis=int(input("Ingresa el valor del Hit point Y:  "))
+        y=[60,10,60, axis]
+        z=[-10,10,10,-10]
+
+        for i in range(len(x)):
+            xg.append(x[i]+xc)
+            yg.append(y[i]+yc)
+            zg.append(z[i]+zc)
+
+        hitpoint(xg,yg,zg)
+
+    if keyboard.is_pressed('Esc'):
+        print("Ejecución finalizada")
+        break
